@@ -171,7 +171,7 @@ def main():
                     elif event.key == pygame.K_F11:
                         scene, fullscreen = toggle_fullscreen(scene, fullscreen)
             keys = pygame.key.get_pressed()
-            scene.crane.update(keys, delta_time, scene.train)
+            scene.crane.update(keys, delta_time, scene.train, paused=scene.paused)
             scene.train.update(delta_time, scene.paused)
             width, height = pygame.display.get_window_size()
             scene.render(width, height)

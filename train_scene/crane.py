@@ -54,7 +54,9 @@ class CraneController:
             dtype=np.float32,
         )
 
-    def update(self, keys, delta_time, train):
+    def update(self, keys, delta_time, train, paused=False):
+        if paused:
+            return
         if self.state in ("idle", "carrying"):
             self.angle += (
                 int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])

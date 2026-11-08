@@ -24,6 +24,9 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
+No Python 3.14 wheel is available for `pygame`; the requirements install
+`pygame-ce` instead on Python 3.14, which provides the same `pygame` import.
+
 O mesmo ponto de entrada tambem pode ser executado com `python -m train_scene`.
 
 `python main.py --self-test` valida o trilho reto, o movimento independente da
@@ -64,17 +67,22 @@ As instrucoes tambem ficam visiveis no canto superior esquerdo da janela.
 ## Shaders, atributos e uniforms
 
 `train_scene/shaders.py` contem o vertex shader e o fragment shader principal,
-alem do par minimo usado na passagem de profundidade da luz. As malhas usam um VBO
-intercalado: `aPosition` (location 0, posicao local), `aNormal` (location 1,
-normal local) e `aTexCoord` (location 2, coordenadas UV). A matriz normal
-transforma as normais para o espaco do mundo, inclusive sob escala nao uniforme.
+alem do par minimo usado na passagem de profundidade da luz. As malhas da cena
+usam um VBO intercalado: `aPosition` (location 0, posicao local), `aNormal`
+(location 1, normal local) e `aTexCoord` (location 2, coordenadas UV). A matriz
+normal transforma as normais para o espaco do mundo, inclusive sob escala nao
+uniforme.
 
 No shader principal, `uModel`, `uView` e `uProjection` aplicam as transformacoes
 hierarquicas, a camera e a projecao em perspectiva. `uLightSpace` projeta a cena
 do ponto de vista da luz; `uLightDirection`, `uCameraPosition`, `uShininess` e
 `uBaseColor` controlam a iluminacao direcional e o material. `uColorTexture` e
 `uUseTexture` controlam a textura; `uShadowMap` fornece a profundidade da luz;
-`uEmissive` destaca os sinais e os farois.
+`uEmissive` destaca os sinais e os farois, e `uAlpha` controla a transparencia
+da linha de mira. O depth shader usa `aPosition`, `uModel` e `uLightSpace` para
+gravar a profundidade dos objetos no mapa de sombra. O HUD possui shaders
+proprios: `aPosition` e `aTexCoord` sao atributos 2D, e `uPanel` seleciona a
+textura do painel de controles.
 
 A textura azul/dourada do vagao e uma imagem RGBA gerada no proprio programa,
 com UVs definidos por face. Nao ha imagem externa. O shadow mapping tem duas

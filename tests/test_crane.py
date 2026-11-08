@@ -32,6 +32,23 @@ class CraneControllerTests(unittest.TestCase):
         self.assertAlmostEqual(crane.angle, initial_angle + 0.7)
         self.assertAlmostEqual(crane.reach, initial_reach + 0.75)
 
+    def test_pause_freezes_crane_controls_and_actions(self):
+        crane = CraneController()
+        train = TrainState()
+        initial_angle, initial_reach, initial_hook_y = (
+            crane.angle,
+            crane.reach,
+            crane.hook_y,
+        )
+        crane.press_space(train)
+
+        crane.update(PressedKey(pygame.K_RIGHT), 1.0, train, paused=True)
+
+        self.assertAlmostEqual(crane.angle, initial_angle)
+        self.assertAlmostEqual(crane.reach, initial_reach)
+        self.assertAlmostEqual(crane.hook_y, initial_hook_y)
+        self.assertEqual(crane.state, "lowering_to_pick")
+
     def test_space_picks_box_then_lowers_it_into_waiting_wagon(self):
         train = TrainState(waiting_for_crane=True, stop_index=1)
         crane = CraneController()
